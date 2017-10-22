@@ -11,7 +11,7 @@ import android.view.SurfaceView;
  * @author: robert
  * @date: 2017-10-21
  * @time: 11:57
- * @说明:
+ * @说明: SurfaceView 编写模板
  */
 public class SurfaceViewTemplate extends SurfaceView implements SurfaceHolder.Callback, Runnable {
     private SurfaceHolder mHolder;
@@ -50,10 +50,7 @@ public class SurfaceViewTemplate extends SurfaceView implements SurfaceHolder.Ca
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        //不断进行绘制
-        while (isRunning) {
-            draw();
-        }
+
     }
 
     @Override
@@ -78,6 +75,9 @@ public class SurfaceViewTemplate extends SurfaceView implements SurfaceHolder.Ca
 
     @Override
     public void run() {
-
+        //不断进行绘制
+        while (isRunning) {
+            draw();
+        }
     }
 }

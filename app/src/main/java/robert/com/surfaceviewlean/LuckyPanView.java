@@ -15,6 +15,8 @@ import android.util.TypedValue;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.socks.library.KLog;
+
 import static android.graphics.BitmapFactory.decodeResource;
 
 /**
@@ -24,6 +26,8 @@ import static android.graphics.BitmapFactory.decodeResource;
  * @说明:
  */
 public class LuckyPanView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
+
+    private static final String TAG = "LuckyPanView";
     private SurfaceHolder mHolder;
     private Canvas mCanvas;
     /* 用于绘制的线程*/
@@ -61,7 +65,7 @@ public class LuckyPanView extends SurfaceView implements SurfaceHolder.Callback,
     /* 键盘速度 */
     private double mSpeed = 0;
     /* 转盘起始角度 */
-    private volatile int mStartAngle;
+    private volatile double mStartAngle;
     /* 判断是否点击了停止按钮 */
     private boolean isShouldEnd;
 
@@ -149,7 +153,7 @@ public class LuckyPanView extends SurfaceView implements SurfaceHolder.Callback,
                 //画背景
                 drawBg();
                 //绘制盘块
-                float tempAngle = mStartAngle;
+                float tempAngle = (float) mStartAngle;
                 float sweepAngle = 360 / mItemSize;
                 for (int i = 0; i < mItemSize; i++) {
                     mArcPaint.setColor(mColors[i]);
@@ -161,14 +165,15 @@ public class LuckyPanView extends SurfaceView implements SurfaceHolder.Callback,
                     drawIcon(tempAngle, sweepAngle, mImageBmp[i]);
                     tempAngle = tempAngle + sweepAngle;
                 }
-                mStartAngle += mSpeed;
                 if (isShouldEnd) {
+                    KLog.e(TAG, "draw: " + mStartAngle);
                     mSpeed--;
                 }
                 if (mSpeed < 0) {
                     mSpeed = 0;
                     isShouldEnd = false;
                 }
+                mStartAngle += mSpeed;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,12 +185,20 @@ public class LuckyPanView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
     public void luckyStart(int index) {
-
-        mSpeed = 50;
+        float avAgngle = 360 / mItemSize;
+        //随机的一个角度
+        float randomAngle = (float) (avAgngle * Math.random());
+        //总共的角度，让他转4圈加上转的角度再加上一个随机的角度
+        float angle = 360 * 4 + avAgngle * index + randomAngle;
+        KLog.e(TAG, "luckyStart: " + angle);
+        //计算初始速度  s = 平均速度*时间   匀加速运动所以平均速度为(起始速度+结束速度)/2 时间 t = v/a 速度的变化除以加速度
+        mSpeed = Math.sqrt(2 * angle) + 0.5d;
+        KLog.e(TAG, "luckyStart: " + mSpeed);
         isShouldEnd = false;
     }
 
     public void luckyStop() {
+        mStartAngle = 0;
         isShouldEnd = true;
     }
 

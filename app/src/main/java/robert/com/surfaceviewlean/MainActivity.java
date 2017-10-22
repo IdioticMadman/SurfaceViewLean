@@ -15,8 +15,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mLucky = (LuckyPanView) findViewById(R.id.lucky_pan);
-        mIvOperator = (ImageView) findViewById(R.id.iv_operator);
+        mLucky = findViewById(R.id.lucky_pan);
+        mIvOperator = findViewById(R.id.iv_operator);
         mIvOperator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     mIvOperator.setImageResource(R.drawable.stop);
-                    mLucky.luckyStart();
+                    mLucky.luckyStart(3);
                 }
             }
         });
